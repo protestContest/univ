@@ -1,0 +1,14 @@
+-std=c89
+-fsanitize=address
+-D__APPLE__=1
+-Wall
+-Wextra
+-Werror
+-Wno-unused-function
+-Wno-unused-parameter
+-pedantic
+-I/opt/homebrew/include
+-I../src
+-I../include
+-include
+base.h
