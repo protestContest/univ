@@ -10,5 +10,5 @@
 #define Bit(n)            ((i64)1 << (n))
 #define RightZeroBit(x)   (~(x) & ((x) + 1))
 
-u32 NumDigits(u32 num, u32 base);
+u32 NumDigits(i32 num, u32 base);
 u32 PopCount(u32 n);

@@ -5,7 +5,7 @@
 #define VecCapacity(vec)      ((vec) ? RawVecCap(vec) : 0)
 #define VecCount(vec)         ((vec) ? RawVecCount(vec) : 0)
 #define VecPush(vec, val)     (VecMakeRoom(vec, 1), (vec)[RawVecCount(vec)++] = val)
-#define VecPop(vec)           (VecCount(vec) > 0 ? RawVecCount(vec)-- : 0)
+#define VecPop(vec)           (VecCount(vec) > 0 ? (vec)[--RawVecCount(vec)] : 0)
 #define GrowVec(vec, num)     (VecMakeRoom(vec, num), RawVecCount(vec) += num)
 #define VecEnd(vec)           &(vec[RawVecCount(vec)])
 #define VecDel(vec, i)        VecDelete(vec, i, sizeof(*(vec)))
@@ -13,7 +13,7 @@
 #define RawVec(vec)           (((u32 *)vec) - 2)
 #define RawVecCap(vec)        RawVec(vec)[0]
 #define RawVecCount(vec)      RawVec(vec)[1]
-#define VecHasRoom(vec, n)    (VecCount(vec) + (n) < VecCapacity(vec))
+#define VecHasRoom(vec, n)    (VecCount(vec) + (n) <= VecCapacity(vec))
 #define VecMakeRoom(vec, n)   (VecHasRoom(vec, n) ? 0 : DoVecGrow(vec, n))
 #define DoVecGrow(vec, n)     (*((void **)&(vec)) = ResizeVec((vec), (n), sizeof(*(vec))/* NOLINT */))
 

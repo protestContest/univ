@@ -1,29 +1,7 @@
-#include "observe.h"
-
-typedef struct {
-  i32 count;
-} Thing;
-
-void Update(void *obj, void *ref)
-{
-  Thing *thing = (Thing*)obj;
-  printf("Count: %d\n", thing->count);
-}
+#include "regex.h"
 
 int main(void)
 {
-  Thing thing = {0};
-  i32 i;
-
-  Observe(&thing, Update, 0);
-  for (i = 0; i < 10; i++) {
-    thing.count++;
-    Notify(&thing);
-  }
-
-  Unobserve(&thing, Update, 0);
-  for (i = 0; i < 10; i++) {
-    thing.count++;
-    Notify(&thing);
-  }
+  i32 pos = RETest("def .+\\(.*\\)", "def foo(x, y) x + y");
+  printf("%d\n", pos);
 }

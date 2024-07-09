@@ -10,6 +10,12 @@
 #define TooSmall(map)         ((map)->capacity == 0 || (map)->count > MaxBuckets((map)->capacity))
 #define TooBig(map)           ((map)->capacity > HashMapMinSize && (map)->count < MinBuckets((map)->capacity))
 
+typedef struct MapBucket {
+  u32 key;
+  u32 value;
+  i32 probe;
+} MapBucket;
+
 static bool Put(HashMap *map, u32 key, u32 value);
 
 static void ResizeMap(HashMap *map, u32 capacity)
@@ -33,6 +39,13 @@ static void ResizeMap(HashMap *map, u32 capacity)
   if (map->buckets) free(map->buckets);
   map->capacity = map2.capacity;
   map->buckets = map2.buckets;
+}
+
+void InitHashMap(HashMap *map)
+{
+  map->capacity = 0;
+  map->count = 0;
+  map->buckets = 0;
 }
 
 void DestroyHashMap(HashMap *map)

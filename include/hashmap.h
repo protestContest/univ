@@ -2,12 +2,6 @@
 
 /* A basic hashmap with robin hood hashing */
 
-typedef struct MapBucket {
-  u32 key;
-  u32 value;
-  i32 probe;
-} MapBucket;
-
 typedef struct {
   u32 capacity;
   u32 count;
@@ -16,6 +10,7 @@ typedef struct {
 
 #define EmptyHashMap {0, 0, 0}
 
+void InitHashMap(HashMap *map);
 void DestroyHashMap(HashMap *map);
 void HashMapSet(HashMap *map, u32 key, u32 value);
 bool HashMapContains(HashMap *map, u32 key);

@@ -1,5 +1,8 @@
 #pragma once
 
-u32 AddSymbol(char *name);
-u32 AddSymbolLen(char *name, u32 len);
+void DestroySymbols(void);
+u32 Symbol(char *name);
+u32 SymbolFrom(char *name, u32 len);
 char *SymbolName(u32 sym);
+void SetSymbolSize(i32 size);
+void ImportSymbols(char *names, i32 len);

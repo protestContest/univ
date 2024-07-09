@@ -6,43 +6,44 @@
 typedef struct {
   ObserveFn update;
   void *ref;
+  i32 next;
 } Observer;
 
 static HashMap subjects = EmptyHashMap;
-static Observer **subject_observers = 0;
+static Observer *observers = 0;
 
 void Observe(void *subject, ObserveFn update, void *ref)
 {
-  Observer ob;
   u32 key = Hash(&subject, sizeof(subject));
-  u32 index;
-
+  Observer ob;
   ob.update = update;
   ob.ref = ref;
-
-  if (HashMapContains(&subjects, key)) {
-    index = HashMapGet(&subjects, key);
-  } else {
-    index = VecCount(subject_observers);
-    HashMapSet(&subjects, key, index);
-    VecPush(subject_observers, 0);
-  }
-
-  VecPush(subject_observers[index], ob);
+  ob.next = HashMapGet(&subjects, key);
+  HashMapSet(&subjects, key, VecCount(observers));
+  VecPush(observers, ob);
 }
 
 void Unobserve(void *subject, ObserveFn update, void *ref)
 {
-  Observer *observers;
   u32 key = Hash(&subject, sizeof(subject));
-  u32 i;
-  if (!HashMapContains(&subjects, key)) return;
+  i32 index = HashMapGet(&subjects, key);
+  Observer *ob = &observers[index];
 
-  observers = subject_observers[HashMapGet(&subjects, key)];
-  for (i = 0; i < VecCount(observers); i++) {
-    if (observers[i].update == update && observers[i].ref == ref) {
-      VecDel(observers, i);
-      return;
+  if (index >= 0 && ob->update == update && ob->ref == ref) {
+    while (index >= 0 && ob->update == update && ob->ref == ref) {
+      index = ob->next;
+      if (index >= 0) ob = &observers[index];
+    }
+    HashMapSet(&subjects, key, index);
+  }
+  if (index < 0) return;
+  while (ob->next >= 0) {
+    Observer *next = &observers[ob->next];
+    if (next->update == update && next->ref == ref) {
+      ob->next = next->next;
+      next = &observers[ob->next];
+    } else {
+      ob = &observers[ob->next];
     }
   }
 }
@@ -50,11 +51,11 @@ void Unobserve(void *subject, ObserveFn update, void *ref)
 void Notify(void *subject)
 {
   u32 key = Hash(&subject, sizeof(subject));
-  if (HashMapContains(&subjects, key)) {
-    Observer *observers = subject_observers[HashMapGet(&subjects, key)];
-    u32 i;
-    for (i = 0; i < VecCount(observers); i++) {
-      observers[i].update(subject, observers[i].ref);
-    }
+  i32 index = HashMapGet(&subjects, key);
+
+  while (index >= 0) {
+    Observer *ob = &observers[index];
+    ob->update(subject, ob->ref);
+    index = ob->next;
   }
 }

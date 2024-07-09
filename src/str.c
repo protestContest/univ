@@ -1,5 +1,7 @@
 #include "str.h"
 #include "hash.h"
+#include "math.h"
+#include "vec.h"
 
 char *SkipSpaces(char *str)
 {
@@ -33,31 +35,6 @@ u32 ColNum(char *source, u32 pos)
   while (cur > source && *(cur-1) != '\n') cur--;
 
   return source + pos - cur;
-}
-
-i32 FindString(char *needle, u32 nlen, char *haystack, u32 hlen)
-{
-  /* Rabin-Karp algorithm */
-  u32 i, j, item_hash, test_hash;
-  if (nlen > hlen) return -1;
-  if (nlen == 0 || hlen == 0) return false;
-
-  item_hash = Hash(needle, nlen);
-  test_hash = Hash(haystack, nlen);
-
-  for (i = 0; i < hlen - nlen; i++) {
-    if (test_hash == item_hash) break;
-    test_hash = SkipHash(test_hash, haystack[i], nlen);
-    test_hash = AppendHash(test_hash, haystack[i+nlen]);
-  }
-
-  if (test_hash == item_hash) {
-    for (j = 0; j < nlen; j++) {
-      if (haystack[i+j] != needle[j]) return -1;
-    }
-    return i;
-  }
-  return -1;
 }
 
 char *JoinStr(char *str1, char *str2, char joiner)
@@ -102,4 +79,23 @@ void Copy(void *src, void *dst, u32 size)
   }
 
   for (i = 0; i < size; i++) dst_bytes[size-1-i] = src_bytes[size-1-i];
+}
+
+char *BufWrite(char *str, char *buf)
+{
+  i32 len = strlen(str);
+  if (VecCount(buf) > 0 && buf[VecCount(buf)-1] == 0) VecPop(buf);
+  GrowVec(buf, len);
+  Copy(str, buf + VecCount(buf) - len, len);
+  return buf;
+}
+
+char *BufWriteNum(i32 num, char *buf)
+{
+  i32 len = NumDigits(num, 10);
+  if (VecCount(buf) > 0 && buf[VecCount(buf)-1] == 0) VecPop(buf);
+  GrowVec(buf, len+1);
+  VecPop(buf);
+  snprintf(buf + VecCount(buf) - len, VecCount(buf)+1, "%d", num);
+  return buf;
 }

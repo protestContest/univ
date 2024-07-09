@@ -17,7 +17,7 @@ TEST_OBJ = $(BUILD)/$(TEST).o
 CC = clang
 INCLUDE_FLAGS = -I$(INCLUDE) -include base.h
 WFLAGS = -Wall -Wextra -Werror -Wno-unused-function -Wno-unused-parameter -pedantic
-CFLAGS = -g -std=c89 $(WFLAGS) $(INCLUDE_FLAGS)
+CFLAGS = -g -O2 -std=c89 $(WFLAGS) $(INCLUDE_FLAGS)
 LDFLAGS =
 
 $(TARGET): $(OBJS)
@@ -45,19 +45,18 @@ test: $(TEST_TARGET)
 .PHONY: clean
 clean:
 	rm -rf $(BUILD)
-	rm -rf $(TARGET)
+	rm -rf $(BIN)
 
 .PHONY: install
 install: $(TARGET)
-	@mkdir -p $(INSTALL)/include
+	@mkdir -p $(INSTALL)/include/$(NAME)
 	@mkdir -p $(INSTALL)/lib
-	@rm -f $(INSTALL)/include/$(NAME).h
-	cp $(INCLUDE)/base.h $(INSTALL)/include/base.h
-	cat $(HDRS) > $(INSTALL)/include/$(NAME).h
+	cp $(INCLUDE)/base.h $(INSTALL)/include/$(NAME)
+	cp $(HDRS) $(INSTALL)/include/$(NAME)
 	cp $(TARGET) $(INSTALL)/lib
 
 .PHONY: uninstall
 uninstall:
-	rm -f $(INSTALL)/include/base.h
-	rm -f $(INSTALL)/include/$(NAME).h
+	rm -f $(INSTALL)/include/$(NAME)/base.h
+	rm -rf $(INSTALL)/include/$(NAME)
 	rm -f $(INSTALL)/lib/lib$(NAME).a

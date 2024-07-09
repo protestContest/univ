@@ -1,9 +1,13 @@
 #include "math.h"
 
-u32 NumDigits(u32 num, u32 base)
+u32 NumDigits(i32 num, u32 base)
 {
   u32 n = 0;
   if (num == 0) return 1;
+  if (num < 0) {
+    n = 1;
+    num = -num;
+  }
   while (num > 0) {
     num /= base;
     n++;
