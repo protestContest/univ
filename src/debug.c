@@ -2,44 +2,71 @@
 #include "math.h"
 #include "str.h"
 
-void HexDump(void *data, u32 size)
+void HexDump(void *data, u32 size, char *title)
 {
   u8 *bytes = data;
   u32 colwidth = 4;
-  u32 cols = 8;
+  u32 cols = 6;
   u32 rowwidth = colwidth*cols;
   u32 nrows = size / (rowwidth);
   u32 extra = size % (rowwidth);
   u32 sizewidth = NumDigits(size, 10);
   u32 i, j;
+  u32 titlelen = 0;
+
+  printf("┌");
+  for (i = 0; i < sizewidth; i++) printf("─");
+  printf("┬");
+  if (title) {
+    printf("╴%s╶", title);
+    titlelen = strlen(title) + 2;
+  }
+  for (i = 0; i < 2*colwidth*cols + cols + 1 - titlelen; i++) printf("─");
+  printf("┬");
+  for (i = 0; i < rowwidth + 2; i++) printf("─");
+  printf("┐\n");
 
   for (i = 0; i < nrows; i++) {
-    char *line = (char*)bytes;
-    printf("%*ld│ ", sizewidth, bytes - (u8*)data);
+    u8 *line = bytes;
+    printf("│%*ld│ ", sizewidth, bytes - (u8*)data);
     for (j = 0; j < rowwidth; j++) {
       printf("%02X", bytes[j]);
       if (j % colwidth == colwidth-1) printf(" ");
     }
     bytes += rowwidth;
-    printf("│");
+    printf("│ ");
     for (j = 0; j < rowwidth; j++) {
-      if (IsPrintable(line[j])) printf("%c", line[j]);
-      else printf(" ");
+      if (line[j] < ' ') {
+        printf(" ");
+      } else if (line[j] >= 0x7F) {
+        printf(".");
+      } else {
+        printf("%c", line[j]);
+      }
     }
-    printf("│\n");
+    printf(" │\n");
   }
 
-  printf("%*ld│ ", sizewidth, bytes - (u8*)data);
+  printf("│%*ld│ ", sizewidth, bytes - (u8*)data);
   for (i = 0; i < rowwidth; i++) {
     if (i < extra) printf("%02X", bytes[i]);
     else printf("  ");
     if (i % colwidth == colwidth-1) printf(" ");
   }
 
-  printf("│");
+  printf("│ ");
   for (j = 0; j < rowwidth; j++) {
     if (j < extra && IsPrintable(bytes[j])) printf("%c", bytes[j]);
     else printf(" ");
   }
-  printf("│\n");
+  printf(" │\n");
+
+  printf("└");
+  for (i = 0; i < sizewidth; i++) printf("─");
+  printf("┴");
+  printf("╴%d bytes╶", size);
+  for (i = 0; i < 2*colwidth*cols + cols + 1 - sizewidth - 8; i++) printf("─");
+  printf("┴");
+  for (i = 0; i < rowwidth + 2; i++) printf("─");
+  printf("┘\n");
 }

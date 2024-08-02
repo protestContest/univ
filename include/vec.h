@@ -9,6 +9,7 @@
 #define GrowVec(vec, num)     (VecMakeRoom(vec, num), RawVecCount(vec) += num)
 #define VecEnd(vec)           &(vec[RawVecCount(vec)])
 #define VecDel(vec, i)        VecDelete(vec, i, sizeof(*(vec)))
+#define VecLast(vec)          ((vec)[VecCount(vec)-1])
 
 #define RawVec(vec)           (((u32 *)vec) - 2)
 #define RawVecCap(vec)        RawVec(vec)[0]

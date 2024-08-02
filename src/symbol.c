@@ -1,6 +1,7 @@
 #include "symbol.h"
 #include "hash.h"
 #include "hashmap.h"
+#include "math.h"
 #include "vec.h"
 #include "str.h"
 
@@ -53,4 +54,13 @@ void ImportSymbols(char *names, i32 len)
     SymbolFrom(names, len);
     names += len + 1;
   }
+}
+
+u32 ExportSymbols(char **result)
+{
+  if (result) {
+    *result = realloc(*result, VecCount(names));
+    Copy(names, *result, VecCount(names));
+  }
+  return VecCount(names);
 }

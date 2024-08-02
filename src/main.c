@@ -1,7 +1,22 @@
-#include "regex.h"
+#include "debug.h"
+#include "file.h"
+#include "str.h"
 
-int main(void)
+int main(int argc, char *argv[])
 {
-  i32 pos = RETest("def .+\\(.*\\)", "def foo(x, y) x + y");
-  printf("%d\n", pos);
+  char *data;
+
+  if (argc < 2) {
+    fprintf(stderr, "Usage: hexdump <file>\n");
+    return 1;
+  }
+
+  data = ReadFile(argv[1]);
+  if (!data) {
+    fprintf(stderr, "Could not read \"%s\"\n", argv[1]);
+    return 1;
+  }
+
+  HexDump(data, FileSize(argv[1]), basename(argv[1]));
+  return 0;
 }

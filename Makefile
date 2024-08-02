@@ -17,7 +17,7 @@ TEST_OBJ = $(BUILD)/$(TEST).o
 CC = clang
 INCLUDE_FLAGS = -I$(INCLUDE) -include base.h
 WFLAGS = -Wall -Wextra -Werror -Wno-unused-function -Wno-unused-parameter -pedantic
-CFLAGS = -g -O2 -std=c89 $(WFLAGS) $(INCLUDE_FLAGS)
+CFLAGS = -g -O0 -std=c89 $(WFLAGS) $(INCLUDE_FLAGS)
 LDFLAGS =
 
 $(TARGET): $(OBJS)

@@ -3,16 +3,33 @@
 #include "math.h"
 #include "vec.h"
 
+char *NewStr(char *str)
+{
+  char *newstr;
+  u32 len;
+  if (!str) return 0;
+  len = strlen(str);
+  newstr = malloc(len+1);
+  Copy(str, newstr, len+1);
+  return newstr;
+}
+
 char *SkipSpaces(char *str)
 {
   while (*str == ' ' || *str == '\t') str++;
   return str;
 }
 
-char *LineEnd(char *str)
+char *LineStart(u32 index, char *str)
 {
-  while (*str != 0 && !IsNewline(*str)) str++;
-  return str;
+  while (index > 0 && !IsNewline(str[index-1])) index--;
+  return str + index;
+}
+
+char *LineEnd(u32 index, char *str)
+{
+  while (str[index] != 0 && !IsNewline(str[index])) index++;
+  return str + index + IsNewline(str[index]);
 }
 
 u32 LineNum(char *source, u32 pos)
@@ -49,6 +66,16 @@ char *JoinStr(char *str1, char *str2, char joiner)
   return str;
 }
 
+char *StrCat(char *str1, char *str2)
+{
+  u32 len1 = str1 ? strlen(str1) : 0;
+  u32 len2 = str2 ? strlen(str2) : 0;
+  str1 = realloc(str1, len1+len2+1);
+  Copy(str2, str1+len1, len2);
+  str1[len1+len2] = 0;
+  return str1;
+}
+
 u32 ParseInt(char *str)
 {
   u32 num = 0;
@@ -79,6 +106,18 @@ void Copy(void *src, void *dst, u32 size)
   }
 
   for (i = 0; i < size; i++) dst_bytes[size-1-i] = src_bytes[size-1-i];
+}
+
+u32 WriteStr(char *str, u32 len, char *buf)
+{
+  u32 buflen = buf ? len+1 : 0;
+  return snprintf(buf, buflen, "%*.*s", len, len, str);
+}
+
+u32 WriteNum(i32 num, char *buf)
+{
+  u32 len = buf ? NumDigits(num, 10) + 1 : 0;
+  return snprintf(buf, len, "%d", num);
 }
 
 char *BufWrite(char *str, char *buf)
