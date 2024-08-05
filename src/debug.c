@@ -23,7 +23,7 @@ void HexDump(void *data, u32 size, char *title)
   }
   for (i = 0; i < 2*colwidth*cols + cols + 1 - titlelen; i++) printf("─");
   printf("┬");
-  for (i = 0; i < rowwidth + 2; i++) printf("─");
+  for (i = 0; i < rowwidth; i++) printf("─");
   printf("┐\n");
 
   for (i = 0; i < nrows; i++) {
@@ -34,7 +34,7 @@ void HexDump(void *data, u32 size, char *title)
       if (j % colwidth == colwidth-1) printf(" ");
     }
     bytes += rowwidth;
-    printf("│ ");
+    printf("│");
     for (j = 0; j < rowwidth; j++) {
       if (line[j] < ' ') {
         printf(" ");
@@ -44,7 +44,7 @@ void HexDump(void *data, u32 size, char *title)
         printf("%c", line[j]);
       }
     }
-    printf(" │\n");
+    printf("│\n");
   }
 
   printf("│%*ld│ ", sizewidth, bytes - (u8*)data);
@@ -54,12 +54,12 @@ void HexDump(void *data, u32 size, char *title)
     if (i % colwidth == colwidth-1) printf(" ");
   }
 
-  printf("│ ");
+  printf("│");
   for (j = 0; j < rowwidth; j++) {
     if (j < extra && IsPrintable(bytes[j])) printf("%c", bytes[j]);
     else printf(" ");
   }
-  printf(" │\n");
+  printf("│\n");
 
   printf("└");
   for (i = 0; i < sizewidth; i++) printf("─");
@@ -67,6 +67,6 @@ void HexDump(void *data, u32 size, char *title)
   printf("╴%d bytes╶", size);
   for (i = 0; i < 2*colwidth*cols + cols + 1 - sizewidth - 8; i++) printf("─");
   printf("┴");
-  for (i = 0; i < rowwidth + 2; i++) printf("─");
+  for (i = 0; i < rowwidth; i++) printf("─");
   printf("┘\n");
 }
