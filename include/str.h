@@ -64,7 +64,8 @@
 #define CopyStr(s, n)     strndup(s, n)
 #define StrLen(s)         strlen(s)
 
-char *NewStr(char *str);
+char *NewString(char *str);
+char *StringFrom(char *str, u32 len);
 char *SkipSpaces(char *str);
 char *LineStart(u32 index, char *str);
 char *LineEnd(u32 index, char *str);

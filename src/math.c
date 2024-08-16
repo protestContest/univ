@@ -1,4 +1,5 @@
 #include "math.h"
+#include "hash.h"
 
 u32 NumDigits(i32 num, u32 base)
 {
@@ -30,16 +31,20 @@ static u32 rand_state = 1;
 void SeedRandom(u32 seed)
 {
   rand_state = seed;
+  Random();
 }
 
 u32 Random(void) {
-  rand_state ^= rand_state << 13;
-  rand_state ^= rand_state << 17;
-  rand_state ^= rand_state << 5;
-  return rand_state;
+  u32 mul = (u32)6364136223846793005u;
+  u32 inc = (u32)1442695040888963407u;
+  u32 x = rand_state;
+  u32 r = (u32)(x >> 29);
+  rand_state = x * mul + inc;
+  x ^= x >> 18;
+  return x >> r | x << (-r & 31);
 }
 
-u32 RandomBetween(u32 min, u32 max)
+i32 RandomBetween(i32 min, i32 max)
 {
   u32 r, range, buckets, limit;
   if (min == max) return min;
@@ -49,7 +54,7 @@ u32 RandomBetween(u32 min, u32 max)
     max = tmp;
   }
 
-  range = 1 + max - min;
+  range = max - min;
   buckets = MaxUInt / range;
   limit = buckets * range;
 
@@ -57,5 +62,5 @@ u32 RandomBetween(u32 min, u32 max)
     r = Random();
   } while (r >= limit);
 
-  return min + (r / buckets);
+  return min + (i32)(r / buckets);
 }

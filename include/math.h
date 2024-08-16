@@ -14,4 +14,4 @@ u32 NumDigits(i32 num, u32 base);
 u32 PopCount(u32 n);
 void SeedRandom(u32 seed);
 u32 Random(void);
-u32 RandomBetween(u32 min, u32 max);
+i32 RandomBetween(i32 min, i32 max);

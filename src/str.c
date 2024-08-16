@@ -3,14 +3,19 @@
 #include "math.h"
 #include "vec.h"
 
-char *NewStr(char *str)
+char *NewString(char *str)
+{
+  if (!str) return 0;
+  return StringFrom(str, StrLen(str));
+}
+
+char *StringFrom(char *str, u32 len)
 {
   char *newstr;
-  u32 len;
   if (!str) return 0;
-  len = strlen(str);
   newstr = malloc(len+1);
-  Copy(str, newstr, len+1);
+  Copy(str, newstr, len);
+  newstr[len] = 0;
   return newstr;
 }
 
